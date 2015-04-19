@@ -36,7 +36,7 @@ foreach($digests as $subscriber => $activity)
 
 	$notification = $tpl->fetch("templates/email-notification.tpl.php");
 
-	echo $notification;
+	mail($subscriber, "New replies to your comments", $notification);
 }
 
 ?>
