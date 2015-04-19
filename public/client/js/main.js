@@ -64,6 +64,7 @@ $(function(){
 			})
 		};
 		self.rethreadChildrenOf = function(parent) {
+			if(typeof(parent) == "string") parent = document.getElementById("comment-" + parent);
 			var parentId = $.data(parent, 'comment-id');
 			if(!(parentId in self.hierarchy)) return;
 			var depth = Number($.data(parent, 'depth')) + 1;
@@ -185,11 +186,18 @@ $(function(){
 				method:'GET',
 				success: function( json ) {
 					rootDiv.lastFetchTime = json.fetchTime;
+					var rethreadTopLevel = false;
 					$.each(json.comments, function(i, comment){
 						comment.sync = "synced";
 						db.save(comment);
+						if(!comment.parent_id) rethreadTopLevel = true;
 					});
-					rootDiv.threading.rethreadTopLevel();
+					if(rethreadTopLevel)
+						rootDiv.threading.rethreadTopLevel();
+					else
+						$.each(json.comments, function(i, comment){
+							rootDiv.threading.rethreadChildrenOf(comment.parent_id);
+						});
 				},
 				error: function(xhr, msg) {
 					console.error("Error loading comments: " + msg);
