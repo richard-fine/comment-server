@@ -29,8 +29,14 @@ switch($_SERVER['REQUEST_METHOD'])
 
 	case "GET":
 	{
+		if(isset($_GET["since"]))
+			$results = $db->getActivityAtUrlSinceTime($_GET["url"], $_GET["since"]);
+		else
+			$results = $db->getCommentsForUrl($_GET["url"]);
+		
 		header('Content-Type: application/json');
-		$results = $db->getCommentsForUrl($_GET["url"]);
+		print '{"fetchTime":"'.date('Y-m-d H:i:s').'",';
+		print '"comments":';
 		print "[\n";
 		$isFirst = true;
 		while($results->next())
@@ -39,7 +45,7 @@ switch($_SERVER['REQUEST_METHOD'])
 			$isFirst = false;
 			print CommentToJSON($results);
 		}
-		print ']';
+		print ']}';
 		break;
 	}
 }

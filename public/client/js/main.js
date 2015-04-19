@@ -123,6 +123,8 @@ $(function(){
 		rootDiv.threading.updateHierarchy(comment, c);
 	};
 
+	rootDiv.lastFetchTime = null;
+
 	rootDiv.db = Lawnchair({name:'comments', record:'comment'}, function(db){
 
 		db.after('save', function(c){
@@ -174,13 +176,16 @@ $(function(){
 			})
 		};
 
-		rootDiv.fetchInitialComments = function(){
+		rootDiv.fetchNewComments = function(){
+			var data = {url:rootDiv.baseUrl};
+			if(rootDiv.lastFetchTime) data.since = rootDiv.lastFetchTime;
 			$.ajax({
 				url:serverURL,
-				data:{url:rootDiv.baseUrl},
+				data:data,
 				method:'GET',
 				success: function( json ) {
-					$.each(json, function(i, comment){
+					rootDiv.lastFetchTime = json.fetchTime;
+					$.each(json.comments, function(i, comment){
 						comment.sync = "synced";
 						db.save(comment);
 					});
@@ -200,7 +205,8 @@ $(function(){
 			rootDiv.threading.rethreadTopLevel();
 		});
 
-		rootDiv.fetchInitialComments();
+		rootDiv.fetchNewComments();
+		setInterval(rootDiv.fetchNewComments, 5000);
 		
 	});
 
