@@ -2,6 +2,7 @@
 
 require_once("lib/comment.php");
 require_once("lib/db.php");
+require_once("lib/Savant3.php");
 
 $db = new DB();
 $db->connect();
@@ -16,32 +17,26 @@ while($whatsnew->next())
 		$digests[$whatsnew->getSubscriber()] = array();
 
 	array_push($digests[$whatsnew->getSubscriber()], Comment::CopyFrom($whatsnew));
+
+	$db->conn->query("UPDATE subscriptions SET updated = CURRENT_TIMESTAMP where id = " . $whatsnew->getSubscriptionID());
 }
 
 $db->close();
 
+$tpl = new Savant3();
+
+// TODO: Assign site-level parameters to $tpl here
+
 foreach($digests as $subscriber => $activity)
 {
-	$to = $subscriber;
-	$from = "noreply@example.com";
-	$subject = "New replies to your comments at example.com";
-	$body = "Hi,\r\n\r\n"
-		  . "There are new replies to your comment:" . " :\r\n\r\n";
+	$tpl->to = $subscriber;
+	$tpl->from = "noreply@example.com";
+	$tpl->subject = "New replies to your comments";
+	$tpl->comments = $activity;
 
-	foreach($activity as $comment)
-	{
-		$body .= $comment->getAttribution() . " wrote at " . $comment->getTimestamp() . ":\r\n";
-//		$body .= "---\r\n\r\n";
-		foreach(explode("\r\n", $comment->getContent()) as $line)
-			$body .= "" . $line;
-		$body .= "\r\n\r\n---------------\r\n\r\n";
-	}
+	$notification = $tpl->fetch("templates/email-notification.tpl.php");
 
-	echo "To: $to\nFrom: $from\nSubject: $subject\n\n$body";
-
-	//mail($to, $subject, $body);
-
-
+	echo $notification;
 }
 
 ?>

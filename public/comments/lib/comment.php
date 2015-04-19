@@ -86,7 +86,7 @@ class CommentSet implements IComment
 
 class SubscriptionCommentSet extends CommentSet
 {
-	public function getSubscriptionID() { return $this->current["subscriptions.id"]; }
+	public function getSubscriptionID() { return $this->current["subscriptionID"]; }
 	public function getSubscriber() { return $this->current["subscriber"]; }
 }
 

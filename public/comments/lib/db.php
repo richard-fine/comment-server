@@ -93,7 +93,7 @@ class DB
 
 	public function getOutdatedSubscriptions()
 	{
-		$stmt = $this->conn->prepare("SELECT * FROM subscriptions, comments WHERE comments.timestamp > subscriptions.updated AND ((subscriptions.comment_id IS NULL AND subscriptions.url = comments.url) OR subscriptions.comment_id = comments.parent_id) ORDER BY comments.timestamp");
+		$stmt = $this->conn->prepare("SELECT subscriptions.id as subscriptionID, subscriber, comments.* FROM subscriptions, comments WHERE comments.timestamp > subscriptions.updated AND ((subscriptions.comment_id IS NULL AND subscriptions.url = comments.url) OR subscriptions.comment_id = comments.parent_id) ORDER BY comments.timestamp");
 		$stmt->execute();
 
 		return new SubscriptionCommentSet($stmt->get_result());
