@@ -10,7 +10,17 @@ $(function(){
 		replyForm: doT.template(document.getElementById('replyTmpl').text)
 	};
 
+	rootDiv.prepopulateReplyForm = function(replyForm)
+	{
+		replyForm.find("*[name]").filter(":input").each(function(i, elem){
+			var elemName = $(elem).attr('name');
+			if($.cookie(elemName))
+				$(elem).val($.cookie(elemName));
+		});
+	}
+
 	var topLevelReplyForm = $(rootDiv.templates.replyForm());
+	rootDiv.prepopulateReplyForm(topLevelReplyForm);
 	topLevelReplyForm.on('click', 'input.submit', function(evt){
 		rootDiv.submitReply($(evt.target).parents('.reply-form').first());
 		evt.preventDefault();
@@ -21,6 +31,7 @@ $(function(){
 	$(rootDiv).on('click', '.comment-reply', function(evt){
 		var comment = $(evt.target).parents('.comment');
 		var replyForm = $(rootDiv.templates.replyForm());
+		rootDiv.prepopulateReplyForm(replyForm);
 		replyForm.data('parent-id', comment.data('comment-id'));
 		replyForm.css('margin-left', comment.css('margin-left'));
 		comment.after(replyForm);
@@ -121,6 +132,8 @@ $(function(){
 		{
 			var comment = {};
 			postForm.find("*[name]").filter(":input").each(function(i, elem){comment[$(elem).attr('name')] = $(elem).val()});
+			$.cookie('attribution', comment.attribution);
+			$.cookie('subscriber', comment.subscriber);
 			comment.url = rootDiv.baseUrl;
 			comment.parent_id = postForm.data('parent-id') || null,
 			comment.sync = 'push';
