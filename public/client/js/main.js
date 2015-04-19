@@ -26,6 +26,15 @@ $(function(){
 		comment.after(replyForm);
 	});
 
+	$(rootDiv).on('click', '.reply-form .previewWrapper', function(evt){
+		$(".preview", evt.target).toggle();
+	});
+
+	$(rootDiv).on('change keydown', '.reply-form textarea', function(evt){
+		var form = $(evt.target).parents('.reply-form');
+		$('.preview', form).html(markdown.toHTML($('textarea', form).val()));
+	});
+
 	rootDiv.baseUrl = "//" + document.location.hostname + document.location.pathname;
 
 	function id(a) { return a }

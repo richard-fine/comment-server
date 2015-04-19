@@ -293,3 +293,4 @@ textarea {
 .reply-form textarea { display: block; width: 100%; }
 .reply-form input.submit { float: right; }
 .reply-form:after { height: 0px; content: '.'; display: block; overflow: hidden; clear: both; }
+.reply-form .previewWrapper { border: dotted 1px #888888; min-height: 10px; }
