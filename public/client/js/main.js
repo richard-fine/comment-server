@@ -55,6 +55,7 @@ $(function(){
 		self.topLevel = {};
 		self.hierarchy = {};
 		self.maxDepth = -1;
+		self.scheme = "none";
 		self.sort = function(a, b) { return $.data(a, 'timestamp') - $.data(b, 'timestamp') };
 		self.rethreadTopLevel = function() {
 			$.each($.map(self.topLevel, id).sort(self.sort), function(i, c){
@@ -78,6 +79,7 @@ $(function(){
 			})
 		};
 		self.selectPromotedChild = function(comments, parent) {
+			if(self.scheme == "none") return null;
 			if(comments.length == 1) return comments[0];
 			var parentAuthor = $(".attribution", parent).text();
 			var grandparentAuthor = $("#comment-" + $.data(parent, "parent-id") + " .attribution").text();
