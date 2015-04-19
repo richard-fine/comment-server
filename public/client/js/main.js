@@ -49,11 +49,30 @@ $(function(){
 			if(self.maxDepth >= 0) depth = Math.min(depth, self.maxDepth);
 			var children = $.map(self.hierarchy[parentId], id);
 			children.sort(self.sort);
+			var promotedChild = self.selectPromotedChild(children, parent);
 			$.each(children, function(i, c) { 
-				$(parent).after($(c).detach().data('depth', depth).css('margin-left', (depth*20)));
+				$(c).toggleClass("linear-child", c == promotedChild);
+				var effectiveDepth = (c == promotedChild) ? depth - 1 : depth;
+				$(parent).after($(c).detach().data('depth', effectiveDepth).css('margin-left', (effectiveDepth*20)));
 				self.rethreadChildrenOf(c);
 			})
 		};
+		self.selectPromotedChild = function(comments, parent) {
+			if(comments.length == 1) return comments[0];
+			var parentAuthor = $(".attribution", parent).text();
+			var grandparentAuthor = $("#comment-" + $.data(parent, "parent-id") + " .attribution").text();
+			var promotedChild = null;
+			 $.each(comments, function(i, c){
+			 	var author = $(".attribution", c).text();
+			 	if(author == parentAuthor || author == grandparentAuthor)
+			 	{
+			 		promotedChild = c;
+			 		return false;
+			 	}
+			 	return true;
+			 });
+			 return promotedChild;
+		}
 		self.updateHierarchy = function(comment, elem) {
 			if(comment.parent_id)
 			{

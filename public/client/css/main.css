@@ -278,10 +278,14 @@ textarea {
     }
 }
 
-#comments .controls, #comments .byline { margin: 0px; padding: 0px; color: #888888; font-size: 10px; }
+#comments .controls, #comments .byline { margin: 0px; padding: 0px; color: #888888; font-size: 10px; font-weight: bold;}
 #comments .controls li { display: inline; margin-right: 10px; }
 #comments .comment.unsynced { background-color: #ffffdd; }
 #comments .comment.in-moderation { color: #888888; background-color: #dddddd; }
+
+#comments .comment { position: relative; }
+#comments .comment.linear-child .role { position: absolute; top: 0; bottom: 0; left: -5px; width: 2px; background-color: black;}
+#comments .comment:not(.linear-child) .role { position: absolute; top: 50%; bottom: 0px; left: -15px; width: 12px; background-color: black;}
 
 .reply-form { display: block; max-width: 960px; }
 .reply-form input { display: inline; }
