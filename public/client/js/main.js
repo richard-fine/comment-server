@@ -30,10 +30,12 @@ $(function(){
 
 	$(rootDiv).on('click', '.comment-reply', function(evt){
 		var comment = $(evt.target).parents('.comment');
+		if(comment.data('reply-form')) return;
 		var replyForm = $(rootDiv.templates.replyForm());
 		rootDiv.prepopulateReplyForm(replyForm);
 		replyForm.data('parent-id', comment.data('comment-id'));
 		replyForm.css('margin-left', comment.css('margin-left'));
+		comment.data('reply-form', replyForm);
 		comment.after(replyForm);
 	});
 
@@ -76,6 +78,8 @@ $(function(){
 				$(c).toggleClass("linear-child", c == promotedChild);
 				var effectiveDepth = (c == promotedChild) ? depth - 1 : depth;
 				$(parent).after($(c).detach().data('depth', effectiveDepth).css('margin-left', (effectiveDepth*20)));
+				if($.data(c, 'reply-form'))
+					$(c).after($($.data(c, 'reply-form')).detach());
 				self.rethreadChildrenOf(c);
 			})
 		};
