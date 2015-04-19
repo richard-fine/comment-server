@@ -14,7 +14,6 @@
         <link rel="stylesheet" href="css/main.css">
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
         <script id="commentTmpl" type="text/x-dot-template">
-            <div class="role"></div>
             <div class="byline"><span class="timestamp">{{=it.timestamp}}</span> | <span class="attribution">{{=it.attribution}}</span></div>
             {{=markdown.toHTML(it.content)}}
             <ul class="controls"><li class="comment-reply">Reply</li></ul>
