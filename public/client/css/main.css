@@ -284,9 +284,10 @@ textarea {
 #comments .comment.unsynced { background-color: #ffffdd; }
 #comments .comment.in-moderation { color: #888888; background-color: #dddddd; }
 
-#comments .comment { position: relative; }
+#comments .comment { position: relative; margin-bottom: 5px;}
 #comments .comment.linear-child .role { position: absolute; top: 0; bottom: 0; left: -5px; width: 2px; background-color: black;}
 #comments .comment:not(.linear-child) .role { position: absolute; top: 50%; bottom: 0px; left: -15px; width: 12px; background-color: black;}
+#comments .comment > p { margin-top: 0px; margin-bottom: 0px; }
 
 .reply-form { display: block; max-width: 960px; }
 .reply-form input { display: inline; }
