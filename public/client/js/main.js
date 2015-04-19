@@ -19,6 +19,19 @@ $(function(){
 		});
 	}
 
+	if(!window.guid) window.guid = function () {
+    	var d = new Date().getTime();
+    	var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    	    var r = (d + Math.random()*16)%16 | 0;
+    	    d = Math.floor(d/16);
+    	    return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    	});
+    	return uuid;
+	};
+
+	rootDiv.sessionId = $.cookie('comment-session') || guid();
+	$.cookie('comment-session', rootDiv.sessionId);
+
 	var topLevelReplyForm = $(rootDiv.templates.replyForm());
 	rootDiv.prepopulateReplyForm(topLevelReplyForm);
 	topLevelReplyForm.on('click', 'input.submit', function(evt){
