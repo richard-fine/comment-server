@@ -198,7 +198,7 @@ $(function(){
 			});
 		};
 		
-		//setInterval(rootDiv.sendPendingComments, 10000);
+		setInterval(rootDiv.sendPendingComments, 10000);
 
 		db.all(function(objs){
 			$.each(objs, function(i, comment){rootDiv.onCommentUpdated(comment)});
