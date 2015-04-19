@@ -278,7 +278,8 @@ textarea {
     }
 }
 
-#comments .controls, #comments .byline { margin: 0px; padding: 0px; color: #888888; font-size: 10px; font-weight: bold;}
+#comments .controls, #comments .byline { margin: 0px; padding: 0px; color: #888888; font-size: 10px}
+#comments .byline { font-weight: bold; }
 #comments .controls li { display: inline; margin-right: 10px; }
 #comments .comment.unsynced { background-color: #ffffdd; }
 #comments .comment.in-moderation { color: #888888; background-color: #dddddd; }
