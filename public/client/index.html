@@ -16,7 +16,7 @@
         <script id="commentTmpl" type="text/x-dot-template">
             <div class="byline"><span class="timestamp">{{=it.timestamp}}</span> | <span class="attribution">{{=it.attribution}}</span></div>
             {{=markdown.toHTML(it.content)}}
-            <ul class="controls"><li class="comment-reply">Reply</li></ul>
+            <ul class="controls"><li class="comment-reply">Reply</li><li class="admin comment-delete">Delete</li></ul>
         </script>
         <script id="replyTmpl" type="text/x-dot-template">
             <div class="reply-form">

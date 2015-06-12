@@ -16,6 +16,7 @@ switch($_SERVER['REQUEST_METHOD'])
 		$comment->setURL($_POST["url"]);
 		$comment->setParentID($_POST["parent_id"]);
 		$comment->setAttribution($_POST["attribution"]);
+		$comment->setStatus($_POST["status"]);
 
 		$db->upsertCommentAndRefresh($comment);
 

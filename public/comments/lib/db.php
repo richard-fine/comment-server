@@ -23,10 +23,10 @@ class DB
 
 		$stmt->bind_param("ssssss", $url, $content, $attribution, $parentID, $status, $id);
 		$stmt->execute();
-		
-		$success = $stmt->affected_rows > 0;
+
+		list($matched, $changed, $warnings) = sscanf($this->conn->info, "Rows matched: %d Changed: %d Warnings: %d");
 		$stmt->close();
-		return $success;
+		return $matched > 0;
 	}
 
 	private function onNewComment(IComment $comment)
@@ -41,12 +41,13 @@ class DB
 
 	public function upsertCommentAndRefresh(IComment &$comment)
 	{
+		$id = $comment->getID();
+
 		$this->conn->begin_transaction();
 		if(!$this->updateComment($comment))
 		{
 			$stmt = $this->conn->prepare("INSERT INTO comments(id, url, content, attribution, parent_id) VALUES (?, ?, ?, ?, ?)");
 
-			$id = $comment->getID();
 			$url = $comment->getURL();
 			$content = $comment->getContent();
 			$attribution = $comment->getAttribution();

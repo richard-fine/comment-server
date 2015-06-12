@@ -38,7 +38,7 @@ $(function(){
 	rootDiv.onElevationLevelChanged = function() {
 		rootDiv.elevationLevel = $.cookie('comment-elevation-level') || 0;
 
-		$('.comment').toggleClass('admin', rootDiv.elevationLevel > 0);
+		$(rootDiv).toggleClass('admin', rootDiv.elevationLevel > 0);
 	};
 
 	var topLevelReplyForm = $(rootDiv.templates.replyForm());
@@ -59,6 +59,11 @@ $(function(){
 		replyForm.css('margin-left', comment.css('margin-left'));
 		comment.data('reply-form', replyForm);
 		comment.after(replyForm);
+	});
+
+	$(rootDiv).on('click', '.comment-delete', function(evt){
+		var comment = $(evt.target).parents('.comment');
+		rootDiv.deleteComment(comment.data('comment-id'));
 	});
 
 	$(rootDiv).on('click', '.reply-form .previewWrapper', function(evt){
@@ -145,7 +150,8 @@ $(function(){
 		    .data('parent-id', comment.parent_id)
 		    .html(rootDiv.templates.comment(comment))
 		    .toggleClass('in-moderation', comment.status == "mod")
-		    .toggleClass('unsynced', comment.sync == "push");
+		    .toggleClass('unsynced', comment.sync == "push")
+		    .toggleClass('deleted', comment.status == "del");
 
 		rootDiv.threading.updateHierarchy(comment, c);
 	};
@@ -198,6 +204,16 @@ $(function(){
 							$('textarea', postForm).val('');
 					});
 		};
+
+		rootDiv.deleteComment = function(commentId){
+			db.get(commentId, function(c){
+				c.status = "del";
+				c.sync = "push";
+				db.save(c, function(c){
+					rootDiv.onCommentUpdated(c);
+				});
+			});
+		}
 
 		rootDiv.sendPendingComments = function(){
 			db.all(function(all){

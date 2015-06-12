@@ -283,6 +283,8 @@ textarea {
 #comments .controls li { display: inline; margin-right: 10px; }
 #comments .comment.unsynced { background-color: #ffffdd; }
 #comments .comment.in-moderation { color: #888888; background-color: #dddddd; }
+#comments .comment.deleted:before { content: '<this comment has been deleted>'; }
+#comments .comment.deleted > * { display: none; }
 
 #comments .comment { position: relative; margin-bottom: 5px;}
 #comments .comment.linear-child .role { position: absolute; top: 0; bottom: 0; left: -5px; width: 2px; background-color: black;}
@@ -295,3 +297,6 @@ textarea {
 .reply-form input.submit { float: right; }
 .reply-form:after { height: 0px; content: '.'; display: block; overflow: hidden; clear: both; }
 .reply-form .previewWrapper { border: dotted 1px #888888; min-height: 10px; }
+
+#comments .comment .controls .admin { display: none; }
+#comments.admin .comment .controls .admin { display: inline; }
