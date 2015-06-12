@@ -112,6 +112,35 @@ class DB
 	{
 		$this->conn->close();
 	}
+
+	public function authenticateSession($sessionId, $owner, $credential)
+	{
+		$stmt = $this->conn->prepare("INSERT INTO sessions (id, level, owner) (SELECT ? as id, level, attribution from users WHERE attribution = ? and credential = ?) on duplicate key update level = VALUES(level)");
+
+		$hashed_credential = sha1($owner . ":" . $credential);
+		$stmt->bind_param("sss", $sessionId, $owner, $hashed_credential);
+		$stmt->execute();
+		$stmt->close();
+		
+		return $this->getSessionLevel($sessionId);
+	}
+
+	public function getSessionLevel($sessionId)
+	{
+		$stmt = $this->conn->prepare("SELECT level FROM sessions WHERE id = ?");
+		$stmt->bind_param("s", $sessionId);
+		$stmt->execute();
+		$stmt->store_result();
+
+		$result = 0;
+		if($stmt->num_rows > 0)
+		{
+			$stmt->bind_result($result);
+			$stmt->fetch();
+		}
+		$stmt->close();
+		return $result;
+	}
 }
 
 ?>

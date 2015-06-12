@@ -30,7 +30,16 @@ $(function(){
 	};
 
 	rootDiv.sessionId = $.cookie('comment-session') || guid();
-	$.cookie('comment-session', rootDiv.sessionId);
+	$.cookie('comment-session', rootDiv.sessionId, {'path':'/'});
+	
+	rootDiv.elevationLevel = $.cookie('comment-elevation-level') || 0;
+	$.cookie('comment-elevation-level', rootDiv.elevationLevel, {'path':'/'});
+
+	rootDiv.onElevationLevelChanged = function() {
+		rootDiv.elevationLevel = $.cookie('comment-elevation-level') || 0;
+
+		$('.comment').toggleClass('admin', rootDiv.elevationLevel > 0);
+	};
 
 	var topLevelReplyForm = $(rootDiv.templates.replyForm());
 	rootDiv.prepopulateReplyForm(topLevelReplyForm);
@@ -141,6 +150,25 @@ $(function(){
 		rootDiv.threading.updateHierarchy(comment, c);
 	};
 
+	rootDiv.authenticateSession = function(attribution, credential)
+	{
+		$.ajax({url:serverURL + "session.php", 
+				data:{'action':'authenticate', 'attribution':attribution, 'credential':credential}, 
+				method:'POST',
+				xhrFields: {
+      				withCredentials: true
+   				},
+				success: function(c) { 
+					$.cookie('comment-elevation-level', c.level, {path:'/'});
+					window.comments.onElevationLevelChanged();
+				},
+				error: function(xhr, msg) {
+					alert("Couldn't elevate session: " + msg);
+				},
+				dataType:"json"
+		});
+	};
+
 	rootDiv.lastFetchTime = null;
 
 	rootDiv.db = Lawnchair({name:'comments', record:'comment'}, function(db){
@@ -228,6 +256,7 @@ $(function(){
 		db.all(function(objs){
 			$.each(objs, function(i, comment){rootDiv.onCommentUpdated(comment)});
 			rootDiv.threading.rethreadTopLevel();
+			rootDiv.onElevationLevelChanged();
 		});
 
 		rootDiv.fetchNewComments();

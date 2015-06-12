@@ -55,6 +55,7 @@
         <script src="js/main.js"></script>
 
         <input type="button" onClick="Lawnchair({name:'comments'}, function(c){c.nuke()});" value="Nuke local DB"></input>
+        <input type="button" onClick="var pword = prompt('password'); window.comments.authenticateSession('admin', pword);" value="Authenticate"></input>
 		
 		<div id="comments">
 		</div>
